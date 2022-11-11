@@ -6,7 +6,7 @@ import time
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from pyvirtualdisplay import Display
-
+from fake_useragent import UserAgent
 
 
 def get_cita(id, cd):
@@ -22,6 +22,10 @@ def get_cita(id, cd):
     chrome_options.add_argument("--headless")
     chrome_options.add_argument("--disable-dev-shm-usage")
     chrome_options.add_argument("--no-sandbox")
+    ua = UserAgent()
+    userAgent = ua.random
+    print(userAgent)
+    chrome_options.add_argument(f"user-agent={userAgent}")
 
 
     url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id="+ id + "&cd=" + cd
