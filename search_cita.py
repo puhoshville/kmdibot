@@ -24,16 +24,16 @@ def get_cita(id, cd):
     chrome_options.add_argument("--no-sandbox")
 
 
-    url = "http://barcelona.kdmid.ru/queue/OrderInfo.aspx?id="+ id + "&cd=" + cd
+    url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id="+ id + "&cd=" + cd
     driver = webdriver.Chrome(options=chrome_options)
     #driver = webdriver.Chrome()
     driver.get(url)
 
-    driver.save_screenshot("screenshot.png")
-    time.sleep(5)
+    time.sleep(6)
+    driver.save_screenshot("screenshots/screenshot.png")
     captcha = ICR.get_captcha()
 
-    print(captcha)
+    print("HELLO!!!!", captcha)
 
     #inputElement = driver.find_element_by_id("ctl00_MainContent_txtCode")
     inputElement = driver.find_element(by=By.ID, value= 'ctl00_MainContent_txtCode')
