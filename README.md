@@ -57,3 +57,15 @@ usegull selenium:
 https://stackoverflow.com/questions/18557275/how-to-locate-and-insert-a-value-in-a-text-box-input-using-python-selenium
 install chromedriver in dockerfile:
 https://gist.github.com/varyonic/dea40abcf3dd891d204ef235c6e8dd79
+
+
+# Issues with macOS
+
+## xvfb not found? 
+
+Use XQuartz instead on macOS systems
+`brew install XQuartz`
+
+## Issues related to M1 processor
+
+While build/run use `--platform linux/amd64`
