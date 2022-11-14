@@ -79,8 +79,8 @@ def get_cita(id, cd):
         posted = driver.find_element(by=By.ID, value="center-panel").text
         print(posted)
         if texto in posted.lower():
+            time.sleep(60)
             return False, "No citas availables"
-            sleep(60)
         else:
             return True, "ATTENTION!! Citas Available!!!"
     except:
