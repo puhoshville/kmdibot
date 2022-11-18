@@ -9,6 +9,7 @@ from pyvirtualdisplay import Display
 import random
 import string
 import base64
+from telegram_integration import telegram_bot_sendtext
 
 
 def get_cita(id, cd):
@@ -35,7 +36,7 @@ def get_cita(id, cd):
     driver.get(url)
 
     time.sleep(6)
-    driver.save_screenshot("screenshots/screenshot.png")
+    #driver.save_screenshot("screenshots/screenshot.png")
     captcha_element = driver.find_element_by_id("ctl00_MainContent_imgSecNum")
 
     # get binary image from captcha's div
@@ -75,13 +76,25 @@ def get_cita(id, cd):
         ).click()
         print("Eureka!!, Captcha correct")
         time.sleep(1)
+    except:
+        driver.quit()
+        return False, "Captcha identification has failed, trying again...."
+
+
+    try:
         texto = "нет свободного времени"
         posted = driver.find_element(by=By.ID, value="center-panel").text
+        driver.quit()
         print(posted)
+        telegram_bot_sendtext("OK", "", "")
         if texto in posted.lower():
             time.sleep(60)
             return False, "No citas availables"
         else:
-            return True, "ATTENTION!! Citas Available!!!"
-    except:
-        return False, "Captcha identification has failed, trying again...."
+            return True, "ATTENTION"
+    except Exception as e:
+        driver.save_screenshot("screenshots/screenshot.png")
+        telegram_bot_sendtext("ERRORPOSTED", "", "")
+        print(e)
+        driver.quit()
+        return False, "ERROR POSTED"
