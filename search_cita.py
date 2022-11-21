@@ -6,13 +6,12 @@ import time
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from pyvirtualdisplay import Display
-import random
 import string
 import base64
 from telegram_integration import telegram_bot_sendtext
 
 
-def get_cita(id, cd):
+def get_cita(id, cd, chatid_monitoring, token):
     width = 1000
     height = 500
     window_width = int(width) if width is not None else 1000
@@ -31,13 +30,23 @@ def get_cita(id, cd):
     )
 
     url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
-    driver = webdriver.Chrome(options=chrome_options)
-    # driver = webdriver.Chrome()
-    driver.get(url)
+    try:
+        driver = webdriver.Chrome("C:/Users/USR/Downloads/chromedriver.exe", options=chrome_options)
+        driver.get(url)
+    except Exception as e:
+        telegram_bot_sendtext("ERRORDRIVER", token, chatid_monitoring)
+        print(e)
+        return False, "ERROR DRIVER"
 
     time.sleep(6)
-    #driver.save_screenshot("screenshots/screenshot.png")
-    captcha_element = driver.find_element_by_id("ctl00_MainContent_imgSecNum")
+    try:
+        captcha_element = driver.find_element_by_id("ctl00_MainContent_imgSecNum")
+    except Exception as e:
+        driver.save_screenshot("screenshots/errorcaptcha.png")
+        telegram_bot_sendtext("ERRORCAPTCHA", token, chatid_monitoring)
+        print(e)
+        driver.quit()
+        return False, "ERROR CAPTCHA"
 
     # get binary image from captcha's div
     img_base64 = driver.execute_script(
@@ -51,16 +60,13 @@ def get_cita(id, cd):
         captcha_element,
     )
     img_path = (
-        str("screenshots/")
-        + "".join([random.choice(string.ascii_letters) for i in range(10)])
-        + str(".jpg")
+        str("screenshots/captcha.jpg")
     )
     with open(img_path, "wb") as f:
         f.write(base64.b64decode(img_base64))
 
     captcha = ICR.get_captcha(img_path)
 
-    # inputElement = driver.find_element_by_id("ctl00_MainContent_txtCode")
     inputElement = driver.find_element(by=By.ID, value="ctl00_MainContent_txtCode")
     inputElement.send_keys(captcha)
     time.sleep(1)
@@ -86,15 +92,15 @@ def get_cita(id, cd):
         posted = driver.find_element(by=By.ID, value="center-panel").text
         driver.quit()
         print(posted)
-        telegram_bot_sendtext("OK", "", "")
+        telegram_bot_sendtext("OK", token, chatid_monitoring)
         if texto in posted.lower():
             time.sleep(60)
             return False, "No citas availables"
         else:
             return True, "ATTENTION"
     except Exception as e:
-        driver.save_screenshot("screenshots/screenshot.png")
-        telegram_bot_sendtext("ERRORPOSTED", "", "")
+        driver.save_screenshot("screenshots/posted.png")
+        telegram_bot_sendtext("ERRORPOSTED", token, chatid_monitoring)
         print(e)
         driver.quit()
         return False, "ERROR POSTED"

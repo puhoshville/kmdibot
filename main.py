@@ -12,10 +12,11 @@ def main() -> None:
     chatid = data['keys']['telegram_chat_id']
     id = data['keys']['web_id']
     cd = data['keys']['web_cd']
+    chatid_monitoring = data['keys']['telegram_chat_id_monitoring']
     check = False
 
     while check == False:
-        check, result = get_cita(id , cd)
+        check, result = get_cita(id , cd, chatid_monitoring, token)
         print(result)
 
     bot_message = result
