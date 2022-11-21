@@ -1,12 +1,13 @@
-import requests
+from telegram.ext import Updater
+
 
 def telegram_bot_sendtext(bot_message, token, chatid):
-    
-    bot_token = token
-    bot_chatID = chatid
-    send_text = 'https://api.telegram.org/bot' + bot_token + '/sendMessage?chat_id=' + bot_chatID + '&parse_mode=Markdown&text=' + bot_message
 
-    response = requests.get(send_text)
+    updater = Updater(token=token)
+    updater.bot.send_message(chatid, bot_message)
 
-    return response.json()
-    
+
+def telegram_bot_sendpic(path, token, chatid):
+
+    updater = Updater(token=token)
+    updater.bot.send_photo(chatid, photo=open(path))

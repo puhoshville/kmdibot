@@ -1,6 +1,7 @@
 from curses.panel import bottom_panel
 from search_cita import get_cita
 from telegram_integration import telegram_bot_sendtext
+from telegram_integration import telegram_bot_sendpic
 import json
 
 def main() -> None:
@@ -14,13 +15,14 @@ def main() -> None:
     cd = data['keys']['web_cd']
     chatid_monitoring = data['keys']['telegram_chat_id_monitoring']
     check = False
+    url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
 
     while check == False:
         check, result = get_cita(id , cd, chatid_monitoring, token)
         print(result)
 
-    bot_message = result
-    telegram_bot_sendtext(bot_message, token, chatid)
+    telegram_bot_sendtext(result + "\n" + url, token, chatid)
+    telegram_bot_sendpic("screenshots/good.png", token, chatid)
 
 
 if __name__ == '__main__':

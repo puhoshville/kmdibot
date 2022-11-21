@@ -9,6 +9,7 @@ from pyvirtualdisplay import Display
 import string
 import base64
 from telegram_integration import telegram_bot_sendtext
+from telegram_integration import telegram_bot_sendpic
 
 
 def get_cita(id, cd, chatid_monitoring, token):
@@ -34,7 +35,7 @@ def get_cita(id, cd, chatid_monitoring, token):
         driver = webdriver.Chrome("C:/Users/USR/Downloads/chromedriver.exe", options=chrome_options)
         driver.get(url)
     except Exception as e:
-        telegram_bot_sendtext("ERRORDRIVER", token, chatid_monitoring)
+        telegram_bot_sendtext("Брат, у нас драйвер откинулся((((", token, chatid_monitoring)
         print(e)
         return False, "ERROR DRIVER"
 
@@ -43,7 +44,8 @@ def get_cita(id, cd, chatid_monitoring, token):
         captcha_element = driver.find_element_by_id("ctl00_MainContent_imgSecNum")
     except Exception as e:
         driver.save_screenshot("screenshots/errorcaptcha.png")
-        telegram_bot_sendtext("ERRORCAPTCHA", token, chatid_monitoring)
+        telegram_bot_sendtext("Я капчу не нашел(((", token, chatid_monitoring)
+        telegram_bot_sendpic("screenshots/errorcaptcha.png", token, chatid_monitoring)
         print(e)
         driver.quit()
         return False, "ERROR CAPTCHA"
@@ -92,15 +94,17 @@ def get_cita(id, cd, chatid_monitoring, token):
         posted = driver.find_element(by=By.ID, value="center-panel").text
         driver.quit()
         print(posted)
-        telegram_bot_sendtext("OK", token, chatid_monitoring)
+        telegram_bot_sendtext("Брат, я угадал капчу)", token, chatid_monitoring)
         if texto in posted.lower():
             time.sleep(60)
             return False, "No citas availables"
         else:
-            return True, "ATTENTION"
+            driver.save_screenshot("screenshots/good.png")
+            return True, "РОТА ПОДЪЕМ НАХУЙ"
     except Exception as e:
         driver.save_screenshot("screenshots/posted.png")
-        telegram_bot_sendtext("ERRORPOSTED", token, chatid_monitoring)
+        telegram_bot_sendtext("Брат, у нас опять что-то сломалось((", token, chatid_monitoring)
+        telegram_bot_sendpic("screenshots/posted.png", token, chatid_monitoring)
         print(e)
         driver.quit()
         return False, "ERROR POSTED"
