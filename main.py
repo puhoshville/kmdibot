@@ -17,12 +17,13 @@ def main() -> None:
     check = False
     url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
 
-    while check == False:
-        check, result = get_cita(id , cd, chatid_monitoring, token)
-        print(result)
+    while True:
+        while check == False:
+            check, result = get_cita(id , cd, chatid_monitoring, token)
+            print(result)
 
-    telegram_bot_sendtext(result + "\n" + url, token, chatid)
-    telegram_bot_sendpic("screenshots/good.png", token, chatid)
+        telegram_bot_sendtext(result + "\n" + url, token, chatid)
+        telegram_bot_sendpic("screenshots/good.png", token, chatid)
 
 
 if __name__ == '__main__':
