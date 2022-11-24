@@ -1,4 +1,3 @@
-from curses.panel import bottom_panel
 from search_cita import get_cita
 from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
@@ -9,7 +8,6 @@ def main() -> None:
     with open('json_data.json') as json_file:
         data = json.load(json_file)
 
-    token = data['keys']['telegram_token']
     chatid = data['keys']['telegram_chat_id']
     id = data['keys']['web_id']
     cd = data['keys']['web_cd']
@@ -22,9 +20,8 @@ def main() -> None:
             check, result = get_cita(id , cd, chatid_monitoring, token)
             print(result)
 
-        telegram_bot_sendtext(result + "\n" + url, token, chatid)
-        telegram_bot_sendpic("screenshots/good.png", token, chatid)
-
+        telegram_bot_sendtext(result + "\n" + url, chatid)
+        telegram_bot_sendpic("screenshots/good.png", "GOGOGO", chatid)
 
 if __name__ == '__main__':
     main()
