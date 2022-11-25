@@ -17,7 +17,7 @@ def main() -> None:
 
     while True:
         while check == False:
-            check, result = get_cita(id , cd, chatid_monitoring, token)
+            check, result = get_cita(id , cd, chatid_monitoring)
             print(result)
 
         telegram_bot_sendtext(result + "\n" + url, chatid)

@@ -12,7 +12,7 @@ from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
 
 
-def get_cita(id, cd, chatid_monitoring, token):
+def get_cita(id, cd, chatid_monitoring):
     width = 1000
     height = 500
     window_width = int(width) if width is not None else 1000
@@ -32,7 +32,7 @@ def get_cita(id, cd, chatid_monitoring, token):
 
     url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
     try:
-        driver = webdriver.Chrome("C:/Users/USR/Downloads/chromedriver.exe", options=chrome_options)
+        driver = webdriver.Chrome(options=chrome_options)
         driver.get(url)
     except Exception as e:
         telegram_bot_sendtext("Брат, у нас драйвер откинулся((((", chatid_monitoring)
