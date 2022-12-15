@@ -17,8 +17,8 @@ def get_cita(id, cd, chatid_monitoring):
     height = 500
     window_width = int(width) if width is not None else 1000
     window_height = int(height) if height is not None else 500
-    display = Display(visible=0, size=(1366, 768))
-    display.start()
+    #display = Display(visible=0, size=(1366, 768))
+    #display.start()
     id = str(id)
     cd = str(cd)
     chrome_options = Options()
@@ -33,11 +33,17 @@ def get_cita(id, cd, chatid_monitoring):
     url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
     try:
         driver = webdriver.Chrome(options=chrome_options)
-        driver.get(url)
     except Exception as e:
         telegram_bot_sendtext("Брат, у нас драйвер откинулся((((", chatid_monitoring)
         print(e)
         return False, "ERROR DRIVER"
+
+    try:
+        driver.get(url)
+    except Exception as e:
+        driver.quit()
+        print(e)
+        return False, "ERROR URL"
 
     time.sleep(6)
     try:
@@ -67,8 +73,16 @@ def get_cita(id, cd, chatid_monitoring):
     img_path = (
         str("screenshots/captcha.jpg")
     )
+    
+    time.sleep(6)
+    
     with open(img_path, "wb") as f:
         f.write(base64.b64decode(img_base64))
+    except Exception as e:
+        print(e)
+        driver.quit()
+        telegram_bot_sendtext(e, chatid_monitoring)
+        return False, "ERROR CAPTCHA"
 
     captcha = ICR.get_captcha(img_path)
 
@@ -94,6 +108,7 @@ def get_cita(id, cd, chatid_monitoring):
 
     try:
         texto = "нет свободного времени"
+        texte = "EX.DPGACISNULL"
         posted = driver.find_element(by=By.ID, value="center-panel").text
         driver.quit()
         print(posted)
@@ -101,12 +116,18 @@ def get_cita(id, cd, chatid_monitoring):
         if texto in posted.lower():
             time.sleep(60)
             return False, "No citas availables"
+        elif texte in posted:
+            driver.quit()
+            time.sleep(60)
+            return False, "No citas availables"
         else:
-            ry:
+            try:
                 driver.save_screenshot("screenshots/good.png")
             except:
                 print('Error: couldn`t make a screenshot')
-            return True, "РОТА ПОДЪЕМ НАХУЙ"
+            driver.quit()
+            return True, "ВНИМАНИЕ ЕСТЬ ЗАПИСЬ!"
+            
     except Exception as e:
         driver.save_screenshot("screenshots/posted.png")
         telegram_bot_sendpic("screenshots/posted.png", "Брат, у нас опять что-то сломалось((", chatid_monitoring)
