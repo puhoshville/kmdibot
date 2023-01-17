@@ -11,8 +11,9 @@ bot to check embassy appointments
 2. put specific configs:
 telegram_token = your telegram bot token
 telegram_chat_id = the id of your user chat or group
-web_id = request number?
-web_cd = code?
+telegram_chat_id_monitoring = the id of your chat for monitoring
+web_id = request number
+web_cd = code
 
 ## 2 install the python libraries
 run: pip3 install -r requirements.txt
@@ -30,8 +31,9 @@ run: python3 main.py
 2. put specific configs:
 telegram_token = your telegram bot token
 telegram_chat_id = the id of your user chat or group
-web_id = request number?
-web_cd = code?
+telegram_chat_id_monitoring = the id of your chat for monitoring
+web_id = request number
+web_cd = code
  
 ## 2 build the docker image
 

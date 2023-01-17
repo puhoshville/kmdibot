@@ -1,6 +1,7 @@
 from search_cita import get_cita
 from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
+from write_logs import wl
 import json
 
 def main() -> None:
@@ -18,11 +19,12 @@ def main() -> None:
     while True:
         check = False
         while check == False:
-            check, result = get_cita(id , cd, chatid_monitoring)
+            check, result = get_cita(id, cd, chatid_monitoring)
             print(result)
 
         telegram_bot_sendtext(result + "\n" + url_null, chatid)
         telegram_bot_sendpic("screenshots/good.png", "Свободные даты для записи:", chatid)
 
 if __name__ == '__main__':
+    wl("OK", "START")
     main()

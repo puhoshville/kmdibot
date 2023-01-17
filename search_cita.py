@@ -10,6 +10,8 @@ import string
 import base64
 from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
+from write_logs import wl
+from write_logs import form_st
 
 
 def get_cita(id, cd, chatid_monitoring):
@@ -34,8 +36,9 @@ def get_cita(id, cd, chatid_monitoring):
     try:
         driver = webdriver.Chrome(options=chrome_options)
     except Exception as e:
-        telegram_bot_sendtext("Брат, у нас драйвер откинулся((((", chatid_monitoring)
+        telegram_bot_sendtext("ERROR DRIVER", chatid_monitoring)
         print(e)
+        wl("ERR", "error driver\t" + form_st(e))
         return False, "ERROR DRIVER"
 
     try:
@@ -43,6 +46,8 @@ def get_cita(id, cd, chatid_monitoring):
     except Exception as e:
         driver.quit()
         print(e)
+        wl("ERR", "error url\t" + form_st(e))
+        time.sleep(60)
         return False, "ERROR URL"
 
     time.sleep(6)
@@ -54,9 +59,11 @@ def get_cita(id, cd, chatid_monitoring):
         except Exception as e:
             print('Error: couldn`t make a screenshot')
             print(e)
-        telegram_bot_sendpic("screenshots/errorcaptcha.png", "Я капчу не нашел(((", chatid_monitoring)
+        telegram_bot_sendpic("screenshots/errorcaptcha.png", "ERROR CAPTCHA", chatid_monitoring)
         print(e)
         driver.quit()
+        wl("ERR", "error captcha\t" + form_st(e))
+        time.sleep(60)
         return False, "ERROR CAPTCHA"
 
     # get binary image from captcha's div
@@ -73,15 +80,16 @@ def get_cita(id, cd, chatid_monitoring):
     img_path = (
         str("screenshots/captcha.jpg")
     )
-    
+
     time.sleep(6)
-    
-    with open(img_path, "wb") as f:
-        f.write(base64.b64decode(img_base64))
+    try:
+        with open(img_path, "wb") as f:
+            f.write(base64.b64decode(img_base64))
     except Exception as e:
         print(e)
         driver.quit()
         telegram_bot_sendtext(e, chatid_monitoring)
+        wl("ERR", "error save captcha\t" + form_st(e))
         return False, "ERROR CAPTCHA"
 
     captcha = ICR.get_captcha(img_path)
@@ -100,9 +108,11 @@ def get_cita(id, cd, chatid_monitoring):
             by=By.ID, value="ctl00_MainContent_ButtonB"
         ).click()
         print("Eureka!!, Captcha correct")
+        wl("OK", "Captcha correct\t" + captcha)
         time.sleep(1)
     except:
         driver.quit()
+        wl("OK", "Captcha is not guessed\t" + captcha)
         return False, "Captcha identification has failed, trying again...."
 
 
@@ -114,18 +124,20 @@ def get_cita(id, cd, chatid_monitoring):
         print(posted)
         telegram_bot_sendtext("Брат, я угадал капчу)", chatid_monitoring)
         if texto in posted.lower():
+            wl("OK", "No citas availables")
             time.sleep(60)
             return False, "No citas availables"
         elif texte in posted:
-            driver.quit()
-            time.sleep(60)
-            return False, "No citas availables"
+            wl("ERR", "EX.DPGACISNULL")
+            time.sleep(10)
+            return False, "EX.DPGACISNULL"
         else:
             try:
                 driver.save_screenshot("screenshots/good.png")
             except:
                 print('Error: couldn`t make a screenshot')
             driver.quit()
+            wl("OK", "Citas availables")
             return True, "ВНИМАНИЕ ЕСТЬ ЗАПИСЬ!"
             
     except Exception as e:
@@ -133,4 +145,5 @@ def get_cita(id, cd, chatid_monitoring):
         telegram_bot_sendpic("screenshots/posted.png", "Брат, у нас опять что-то сломалось((", chatid_monitoring)
         print(e)
         driver.quit()
+        wl("ERR", "error posted\t" + form_st(e))
         return False, "ERROR POSTED"
