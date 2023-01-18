@@ -25,5 +25,5 @@ def count_lines(filename, chunk_size=1 << 13):
 
 
 def form_st(not_a_string):
-    re.sub("^\s+|\n|\r|\s+$", '', str(not_a_string))
-    return not_a_string
+    now_string = re.sub("^\s+|\n|\r|\s+$", '', str(not_a_string))
+    return now_string
