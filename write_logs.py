@@ -3,19 +3,19 @@ import re
 
 
 def wl(status, text):
-    with open("logs", "a") as f:
+    with open("logs", "a+") as f:
         f.write(
             strftime("%a, %d %b %Y %H:%M:%S", gmtime()) +
             "\t" + status +
             "\t" + text + "\n"
         )
 
-    if len(f.readlines()) == 15000:
-        f = open("logs").readlines()
-        for i in range(5000):
-            f.pop(i)
-        with open("logs", 'w') as F:
-            F.writelines(f)
+        if len(f.readlines()) == 15000:
+            f = open("logs").readlines()
+            for i in range(5000):
+                f.pop(i)
+            with open("logs", 'w') as F:
+                F.writelines(f)
 
 
 def form_st(not_a_string):
