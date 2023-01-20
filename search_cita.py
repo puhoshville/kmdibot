@@ -12,6 +12,8 @@ from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
 from write_logs import wl
 from write_logs import form_st
+import get_stats as gs
+from time import gmtime, strftime
 
 
 def get_cita(id, cd, chatid_monitoring):
@@ -41,12 +43,22 @@ def get_cita(id, cd, chatid_monitoring):
         wl("ERR", "error driver\t" + form_st(e))
         return False, "ERROR DRIVER"
 
+    # 01500 - Sunday 15:00 (+0 GMT)
+    # 01505 - Sunday 15:05 (+0 GMT)
+    if ((strftime("%w%-H%-M", gmtime()) >= "01500") &
+        (strftime("%w%-H%-M", gmtime()) <= "01505")):
+        telegram_bot_sendtext(gs.stat_print(), chatid_monitoring)
+        gs.stat_clear()
+        time.sleep(300)
+
     try:
         driver.get(url)
+        gs.stat_r()
     except Exception as e:
         driver.quit()
         print(e)
         wl("ERR", "error url\t" + form_st(e))
+        gs.stat_er()
         time.sleep(60)
         return False, "ERROR URL"
 
@@ -63,6 +75,7 @@ def get_cita(id, cd, chatid_monitoring):
         print(e)
         driver.quit()
         wl("ERR", "error captcha\t" + form_st(e))
+        gs.stat_er()
         time.sleep(60)
         return False, "ERROR CAPTCHA"
 
@@ -109,10 +122,12 @@ def get_cita(id, cd, chatid_monitoring):
         ).click()
         print("Eureka!!, Captcha correct")
         wl("OK", "Captcha correct\t" + captcha)
+        gs.stat_wc()
         time.sleep(1)
     except:
         driver.quit()
         wl("OK", "Captcha is not guessed\t" + captcha)
+        gs.stat_lc()
         return False, "Captcha identification has failed, trying again...."
 
 
@@ -129,6 +144,7 @@ def get_cita(id, cd, chatid_monitoring):
             return False, "No citas availables"
         elif texte in posted:
             wl("ERR", "EX.DPGACISNULL")
+            gs.stat_er()
             time.sleep(10)
             return False, "EX.DPGACISNULL"
         else:
@@ -146,4 +162,5 @@ def get_cita(id, cd, chatid_monitoring):
         print(e)
         driver.quit()
         wl("ERR", "error posted\t" + form_st(e))
+        gs.stat_er()
         return False, "ERROR POSTED"
