@@ -1,12 +1,8 @@
-import re
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 import ICR_1 as ICR
 import time
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
-from pyvirtualdisplay import Display
-import string
 import base64
 from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
@@ -17,12 +13,6 @@ from time import gmtime, strftime
 
 
 def get_cita(id, cd, chatid_monitoring):
-    width = 1000
-    height = 500
-    window_width = int(width) if width is not None else 1000
-    window_height = int(height) if height is not None else 500
-    #display = Display(visible=0, size=(1366, 768))
-    #display.start()
     id = str(id)
     cd = str(cd)
     chrome_options = Options()
@@ -65,6 +55,17 @@ def get_cita(id, cd, chatid_monitoring):
     time.sleep(6)
     try:
         captcha_element = driver.find_element_by_id("ctl00_MainContent_imgSecNum")
+        # get binary image from captcha's div
+        img_base64 = driver.execute_script(
+            """
+                var ele = arguments[0];
+                var cnv = document.createElement('canvas');
+                cnv.width = 200; cnv.height = 50;
+                cnv.getContext('2d').drawImage(ele, 0, 0);
+                return cnv.toDataURL('image/jpeg').substring(22);    
+                """,
+            captcha_element,
+        )
     except Exception as e:
         try:
             driver.save_screenshot("screenshots/errorcaptcha.png")
@@ -79,17 +80,6 @@ def get_cita(id, cd, chatid_monitoring):
         time.sleep(60)
         return False, "ERROR CAPTCHA"
 
-    # get binary image from captcha's div
-    img_base64 = driver.execute_script(
-        """
-            var ele = arguments[0];
-            var cnv = document.createElement('canvas');
-            cnv.width = 200; cnv.height = 50;
-            cnv.getContext('2d').drawImage(ele, 0, 0);
-            return cnv.toDataURL('image/jpeg').substring(22);    
-            """,
-        captcha_element,
-    )
     img_path = (
         str("screenshots/captcha.jpg")
     )
