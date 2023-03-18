@@ -23,6 +23,4 @@ def telegram_bot_sendpic(path, caption, chatid):
         ret = requests.post(url, data=data, files={'photo': image_file})
     if ret.ok == False:
         print("Error sending the photo")
-    with open(path, "wb") as dst:
-        with open("screenshots/driver.jpg", "rb") as src:
-            dst.write(src.read())
+
