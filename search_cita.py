@@ -54,7 +54,7 @@ def get_cita(id, cd, chatid_monitoring):
 
     time.sleep(6)
     try:
-        captcha_element = driver.find_element_by_id("ctl00_MainContent_imgSecNum")
+        captcha_element = driver.find_element(by=By.ID, value="ctl00_MainContent_imgSecNum")
         # get binary image from captcha's div
         img_base64 = driver.execute_script(
             """
