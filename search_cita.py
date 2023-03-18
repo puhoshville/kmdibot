@@ -35,11 +35,12 @@ def get_cita(id, cd, chatid_monitoring):
 
     # 01500 - Sunday 15:00 (+0 GMT)
     # 01505 - Sunday 15:05 (+0 GMT)
-    if ((strftime("%w%-H%-M", gmtime()) >= "01500") &
-        (strftime("%w%-H%-M", gmtime()) <= "01505")):
+    if ((strftime("%w%H%M", gmtime()) >= "01500") &
+        (strftime("%w%H%M", gmtime()) <= "01505")):
         telegram_bot_sendtext(gs.stat_print(), chatid_monitoring)
         gs.stat_clear()
-        time.sleep(300)
+        while strftime("%M", gmtime()) <= "05":
+            time.sleep(60)
 
     try:
         driver.get(url)
