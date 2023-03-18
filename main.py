@@ -3,6 +3,7 @@ from telegram_integration import telegram_bot_sendtext
 from telegram_integration import telegram_bot_sendpic
 from write_logs import wl
 import json
+import time
 
 def main() -> None:
     
@@ -24,6 +25,7 @@ def main() -> None:
 
         telegram_bot_sendtext(result + "\n" + url_null, chatid)
         telegram_bot_sendpic("screenshots/good.png", "Свободные даты для записи:", chatid)
+        time.sleep(1800)
 
 if __name__ == '__main__':
     wl("OK", "START")
