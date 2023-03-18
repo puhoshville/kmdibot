@@ -71,9 +71,9 @@ def get_cita(id, cd, chatid_monitoring):
         except Exception as e:
             try:
                 driver.save_screenshot("screenshots/errorcaptcha.png")
-            except Exception as e:
+            except Exception as a:
                 print('Error: couldn`t make a screenshot')
-                print(e)
+                print(a)
             telegram_bot_sendpic("screenshots/errorcaptcha.png", "ERROR CAPTCHA", chatid_monitoring)
             print(e)
             driver.quit()
