@@ -162,4 +162,5 @@ def get_cita(id, cd, chatid_monitoring):
         driver.quit()
         telegram_bot_sendtext(e, chatid_monitoring)
         wl("ERR", "unknown error\t" + form_st(e))
+        time.sleep(60)
         return False, "UNKNOWN ERROR"

@@ -10,7 +10,10 @@ def telegram_bot_sendtext(bot_message, chatid):
 
     data = {"chat_id": chatid, "text": bot_message}
     url = f"https://api.telegram.org/bot{token}/sendMessage"
-    ret = requests.post(url, data=data)
+    try:
+        ret = requests.post(url, data=data)
+    except:
+        print("Error sending the message")
     if ret.ok == False:
         print("Error sending the message")
 
