@@ -24,7 +24,7 @@ def get_cita(id, cd, chatid_monitoring):
         f"user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36"
     )
 
-    url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
+    url = "https://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
 
     try:
         driver = webdriver.Chrome(options=chrome_options)
