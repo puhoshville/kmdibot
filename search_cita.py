@@ -127,14 +127,15 @@ def get_cita(id, cd, chatid_monitoring):
             texto = "нет свободного времени"
             texte = "EX.DPGACISNULL"
             posted = driver.find_element(by=By.ID, value="center-panel").text
-            driver.quit()
             print(posted)
             telegram_bot_sendtext("Брат, я угадал капчу)", chatid_monitoring)
             if texto in posted.lower():
+                driver.quit()
                 wl("OK", "No citas availables")
                 time.sleep(60)
                 return False, "No citas availables"
             elif texte in posted:
+                driver.quit()
                 wl("ERR", "EX.DPGACISNULL")
                 gs.stat_er()
                 time.sleep(10)
