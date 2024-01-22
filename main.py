@@ -1,26 +1,32 @@
-from curses.panel import bottom_panel
 from search_cita import get_cita
 from telegram_integration import telegram_bot_sendtext
+from telegram_integration import telegram_bot_sendpic
+from write_logs import wl
 import json
+import time
 
 def main() -> None:
     
-    with open('json_data.json') as json_file:
+    with open('json_data_template.json') as json_file:
         data = json.load(json_file)
 
-    token = data['keys']['telegram_token']
     chatid = data['keys']['telegram_chat_id']
     id = data['keys']['web_id']
     cd = data['keys']['web_cd']
-    check = False
+    chatid_monitoring = data['keys']['telegram_chat_id_monitoring']
+    #url = "http://gyumri.kdmid.ru/queue/OrderInfo.aspx?id=" + id + "&cd=" + cd
+    url_null = "https://gyumri.kdmid.ru/queue/OrderInfo.aspx"
 
-    while check == False:
-        check, result = get_cita(id , cd)
-        print(result)
+    while True:
+        check = False
+        while check == False:
+            check, result = get_cita(id, cd, chatid_monitoring)
+            print(result)
 
-    bot_message = result
-    telegram_bot_sendtext(bot_message, token, chatid)
-
+        telegram_bot_sendtext(result + "\n" + url_null, chatid)
+        telegram_bot_sendpic("screenshots/good.png", "Свободные даты для записи:", chatid)
+        time.sleep(1800)
 
 if __name__ == '__main__':
+    wl("OK", "START")
     main()

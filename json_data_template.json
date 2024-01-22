@@ -3,6 +3,7 @@
         "telegram_token": "",
         "telegram_chat_id": "",
         "web_id": "",
-        "web_cd": ""
+        "web_cd": "",
+		"telegram_chat_id_monitoring" : ""
     }
 }
